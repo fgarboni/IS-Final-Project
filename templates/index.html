@@ -1,9 +1,20 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<h1> Whasuuupp? </h1>
+
 {% endblock %}
 
 {% block body %}
+<div class="content">
+    <h1 style="text-align: center"> Enter Your Text here </h1>
+    <form style="text-align: center" action="/" method="POST" id="submit_text">
+        ID: <input type="text" name="content" id="content">
+        <input type="submit" value="Add Text">
+    </form>
+    <br>
+    <textarea style="text-align: center" rows="10" cols="100" form="submit_text" name="text_content">
+    I'm Watching you :)
+    </textarea>
 
+</div>
 {% endblock %}
