@@ -5,9 +5,9 @@
 {% endblock %}
 class="full_text"
 {% block body %}
-<div class="full_text">
+<div class="full_text" style="text-align: center">
     <h1 style="text-align: center">Texts</h1>
-    <table style="text-align: center" action="/" method="GET">
+    <table align="center" action="/" method="GET">
         <tr style="text-align: center">
             <th>ID</th>
             <th>Date Added</th>
@@ -18,7 +18,7 @@ class="full_text"
             <th>Actions</th>
         </tr>
         {% for text in texts %}
-            <tr>
+            <tr style="text-align: center">
                 <td> {{ text.id }} </td>
                 <td> {{ text.submit_time }} </td>
                 <td> {{ text.full_text }} </td>
