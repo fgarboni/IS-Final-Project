@@ -1,10 +1,37 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+# import tensorflow as tf
+# from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
+
+
+# def activate_model():
+#     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+#     # add the EOS token as PAD token to avoid warnings
+#     model = TFGPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id)
+#     return tokenizer, model
+#     # encode context the generation is conditioned on
+#
+#
+# def predict(words, num_pred, tokenizer, model):
+#     predicted_words = len(words)+num_pred
+#     input_ids = tokenizer.encode(words, return_tensors='tf')
+#     # generate text until the output length (which includes the context length) reaches 50
+#     greedy_output = model.generate(input_ids, max_length=predicted_words)
+#     complete_sentence = tokenizer.decode(greedy_output[0], skip_special_tokens=True)
+#     predicted_part = complete_sentence.replace(words, '')
+#     print(predicted_part)
+
+
+# token, model_test = activate_model()
+# predict('Hello, its me', 5, token, model_test)
+# predict('If you meet me', 3, token, model_test)
+# exit(3)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
+
 
 class Final_Texts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +46,7 @@ class Final_Texts(db.Model):
 
 @app.route('/', methods=['POST','GET'])
 def index():
+    # token, model_t = activate_model()
     if request.method == 'POST':
         text_content = request.form['text_content']
         new_text = Final_Texts(full_text=text_content)
@@ -27,6 +55,7 @@ def index():
             db.session.add(new_text)
             db.session.commit()
             return 'Thanks For Participating'
+
         except:
             return 'There was an issue with adding your text'
 
