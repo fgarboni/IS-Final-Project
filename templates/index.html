@@ -8,7 +8,10 @@
 
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-	<script src="{{ url_for('static', filename='func.js') }}"></script>
+<!--	<script src="{{ url_for('static', filename='func.js') }}"></script>-->
+
+    <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.4/quill.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -18,24 +21,56 @@
         ID: <input type="text" name="content" id="content">
         <input type="submit" value="Add Text">
         <br>
-        <textarea style="text-align: center" rows="10" cols="100" form="submit_text" id="nameInput" name="text_content">
-        </textarea>
+<!--        <textarea style="text-align: center" rows="10" cols="100" form="submit_text" name="text_content" id="nameInput">-->
+<!--        </textarea>-->
+        <div id="nameInput"></div>
+        <button type="submit" class="btn btn-default">Submit</button>
         <br>
-        <button type="submit" class="btn btn-default">Predict</button>
-	</form>
-	<br>
-	<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
-	<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+	    <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+	    <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+    </form>
+
     <script>
-    function changing(){
-        submit=true
-        alert('Prediction to be here');
-    }
-    var timer;
-    function change(){
-        clearTimeout(timer);
-        timer = setTimeout(changing, 1000);
-    }
+        var toolbarOptions = [
+        ['bold', 'italic'],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        [{ 'color': [] }, { 'background': [] }]
+      ]
+      var quill = new Quill('#nameInput', {
+        modules: {
+          toolbar: toolbarOptions
+        },
+        theme: 'snow'
+      });
+
+    </script>
+
+    <script>
+        $('form').on('keyup', function(event) {
+            $.ajax({
+                data : {
+                    name : $('#nameInput').val(),
+                    editor : $('#editor').val()
+                },
+                type : 'POST',
+                url : '/predict'
+            })
+            .done(function(data) {
+
+                if (data.error) {
+                    $('#errorAlert').text(data.error).show();
+                    $('#successAlert').hide();
+                }
+                else {
+                    $('#successAlert').text(data.name).show();
+                    $('#errorAlert').hide();
+                }
+
+            });
+
+            event.preventDefault();
+
+        });
     </script>
 
 </div>
