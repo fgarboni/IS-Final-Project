@@ -1,6 +1,16 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import pymysql
+# connection = pymysql.connect(host='localhost',
+#                              user='root',
+#                              password='',
+#                              db='youtube',
+#                              charset='utf8mb4',
+#                              cursorclass=pymysql.cursors.DictCursor)
+# cursor = connection.cursor()  # execute query in python
+
+
 # import tensorflow as tf
 # from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 
@@ -28,30 +38,23 @@ from datetime import datetime
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:8080/youtube'
 db = SQLAlchemy(app)
 
-
-class Final_Texts(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    full_text = db.Column(db.Text, nullable=False)
-    num_of_offers = db.Column(db.Integer)
-    num_of_accepts = db.Column(db.Integer)
-    gadget = db.Column(db.String(10))
-    submit_time = db.Column(db.DateTime, default=datetime.now())
-
-    def __repr__(self):
-        return '<Text %r>' % self.id
 
 @app.route('/', methods=['POST','GET'])
 def index():
     if request.method == 'POST':
-        text_content = request.form['text_content']
-        new_text = Final_Texts(full_text=text_content)
-
+        id = request.form['title']
+        text_content = request.form['real_text']
+        print(id, text_content)
+        # new_text = Final_Texts(full_text=text_content) - tell yakov we change
+        # print(new_text)
         try:
-            db.session.add(new_text)
-            db.session.commit()
+            query = "INSERT INTO `final_text`(id,text) VALUES (%s,%s)"
+            # cursor.execute(query, (id, text_content))
+            # connection.commit()  # You need this if you want your changes 'commited' to the database.
+            #connection.close() -cause problems when saving
             return 'Thanks For Participating'
 
         except:
@@ -65,11 +68,20 @@ def index():
 def process():
     rf = request.form
     print(rf)
-    text = request.form['name']
+    title = request.form['title']
+    text = request.form['real_text']
+
     if text:
-        # new_text = predict(text, 1, token, model_test)
-        new_text = text[::-1]
-        return jsonify({'name': new_text})
+
+        query = "INSERT INTO `posts`(title,content) VALUES (%s,%s)"
+        # cursor.execute(query, (title, text))
+        # connection.commit()  # You need this if you want your changes 'commited' to the database.
+        #connection.close()
+        #new_text = predict(text, 1, token, model_test)
+        new_text = text+text
+        new_text2 = text+text[0]
+        new_text3 = text+text[-1]
+        return jsonify({'text1': new_text, 'text2': new_text2, 'text3': new_text3})
 
     return jsonify({'error': 'Missing data!'})
 
