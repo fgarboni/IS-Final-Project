@@ -22,7 +22,7 @@
     <form action="/" method="POST" id="submit_text" class="form-inline">
 <!--        ID: <input type="text" name="content" id="content">-->
         ID:<input type='text' id='postTitle' placeholder='Enter your id here'><br><br>
-<!--        <textarea  rows="10" cols="100" id='postContent' placeholder='Enter content'></textarea><br>-->
+<!--        <textarea  rows="10" cols="100" id='Content' placeholder='Enter content'></textarea><br>-->
         <input type='button' id='submit' value='Submit'>
         <input type='hidden' id='postid' value='0' >
         <br>
@@ -36,33 +36,34 @@
 	    <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
     </form>
 
-<!--Make sure the form has the autocomplete function switched off:-->
-<!--<form autocomplete="off" >-->
-<!--    <div class="autocomplete" style="width:300px;">-->
-<!--        <input id="myInput" type="text" name="myCountry" placeholder="write here">-->
-<!--    </div>-->
-<!--    <input type="submit">-->
-<!--</form>-->
+    <script>
+        getText(index: Number = 0, length: Number = remaining): String;
+        insertText(index: Number, text: String, source: String = 'api'): Delta
+        insertText(index: Number, text: String, format: String, value: any,
+           source: String = 'api'): Delta
+        insertText(index: Number, text: String, formats: { [String]: any },
+           source: String = 'api'): Delta
+        getLength(): Number
+    </script>
 
     <script>
         var recommendations = ["hi how are you", "hello its me"];
-
     function autocomplete(inp, arr) {
         /*the autocomplete function takes two arguments,
         the text field element and an array of possible autocompleted values:*/
-<!--        alert(inp);-->
-<!--        alert(arr);-->
         var currentFocus;
         var new_prediction;
         /*execute a function when someone writes in the text field:*/
-        inp.addEventListener("input", function(e) {
-            var a, b, i, val = this.value;
-
-            alert(a);
-            console(b);
-            console(i);
-            console(val);
-
+<!--        inp.addEventListener("input", function(e) {-->
+<!--            var a, b, i, val = this.value;-->
+        quill.on('text-change', function(delta, oldDelta, source) {
+        if (source == 'user') {
+            var text = quill.getText(0, 10);
+<!--            var a, b, i, val = text;-->
+            var a = text;
+            var b = text;
+            var i = text;
+            var val = text;
             /*close any already open lists of autocompleted values*/
             closeAllLists();
             if (!val) { return false;}
@@ -72,7 +73,8 @@
             a.setAttribute("id", this.id + "autocomplete-list");
             a.setAttribute("class", "autocomplete-items");
             /*append the DIV element as a child of the autocomplete container:*/
-            this.parentNode.appendChild(a);
+<!--            this.parentNode.appendChild(a);-->
+            document.getElementById("postContent").parentNode.appendChild(a);
             /*for each item in the array...*/
             for (i = 0; i < arr.length; i++) {
                 /*check if the item starts with the same letters as the text field value:*/
@@ -87,7 +89,9 @@
                     /*execute a function when someone clicks on the item value (DIV element):*/
                     b.addEventListener("click", function(e) {
                         /*insert the value for the autocomplete text field:*/
-                        inp.value = this.getElementsByTagName("input")[0].value;
+<!--                        inp.value = this.getElementsByTagName("input")[0].value;-->
+
+                        quill.insertText((quil.getLength()), 'prediction', 'bold', true);
                         /*close the list of autocompleted values,
                         (or any other open lists of autocompleted values:*/
                         closeAllLists();
@@ -95,10 +99,14 @@
                     a.appendChild(b);
                 }
             }
+            }
         });
         /*execute a function presses a key on the keyboard:*/
-        inp.addEventListener("keydown", function(e) {
+<!--        inp.addEventListener("keydown", function(e) {-->
+        quill.on('text-change', function(delta, oldDelta, source) {
+             if (source == 'user') {
             var x = document.getElementById(this.id + "autocomplete-list");
+<!--            var x = document.getElementById(this.id + "autocomplete-list");-->
             if (x) x = x.getElementsByTagName("div");
             if (e.keyCode == 40) {
                 /*If the arrow DOWN key is pressed,
@@ -119,6 +127,7 @@
                     /*and simulate a click on the "active" item:*/
                     if (x) x[currentFocus].click();
                 }
+            }
             }
         });
         function addActive(x) {
@@ -157,10 +166,10 @@
 <!--    var recommendations = ["hi how are you", "hello its me"];-->
 
     /*initiate the autocomplete function on the "myInput" element, and pass along the recommendations array as possible autocomplete values:*/
-<!--    autocomplete(document.getElementById("postContent"), recommendations);-->
+<!--    autocomplete(document.getElementById("Content"), recommendations);-->
 
         var typingTimer;                //timer identifier
-        var doneTypingInterval = 2000;  //time in ms, 2 second for example
+        var doneTypingInterval = 1000;  //time in ms, 2 second for example
 
         //on keyup, start the countdown
         $('form').on('keyup', function () {
@@ -189,18 +198,17 @@
             .done(function(data) {
 
                 if (data.error) {
-                    $('#errorAlert').text(data.error).show();
+                    $('#errorAlert').text(data.error).hide();
                     $('#successAlert').hide();
                 }
                 else {
-                    $('#successAlert').text(data.text1).show();
+                    $('#successAlert').text(data.text1).hide();
                     $('#errorAlert').hide();
                 }
                 recommendations[0] = data.text1;
                 recommendations[1] = data.text2;
                 recommendations[2] = data.text3;
-<!--                autocomplete(document.getElementById("postContent"), recommendations);-->
-<!--                alert((document.getElementById("testing").text()));-->
+
                 autocomplete($('div.ql-editor').text(), recommendations);
 
             });
@@ -226,11 +234,10 @@
 
     </script>
 
-        <!--script-->
     <script type="text/javascript">
         $(document).ready(function(){
             var timer;
-            var timeout = 5000; // Timout duration
+            var timeout = 2000; // Timout duration
             $('#postTitle,#postContent').keyup(function(){
 
                 if(timer) {
@@ -280,11 +287,11 @@
             })
             .done(function(data) {
                 if (data.error) {
-                    $('#errorAlert').text(data.error).show();
+                    $('#errorAlert').text(data.error).hide();
                     $('#successAlert').hide();
                 }
                 else {
-                    $('#successAlert').text(data.text1).show();
+                    $('#successAlert').text(data.text1).hide();
                     $('#errorAlert').hide();
                 }
             }
