@@ -29,7 +29,7 @@
 
 <!--        <div id="testing"></div>-->
         <div id="postContent"></div>
-        <textarea id="helper" style="display:none;"></textarea>
+        <div id="helper"></div>
 
         <br>
 	    <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
@@ -53,11 +53,13 @@
         the text field element and an array of possible autocompleted values:*/
         var currentFocus;
         var new_prediction;
+        var a;
         /*execute a function when someone writes in the text field:*/
 <!--        inp.addEventListener("input", function(e) {-->
 <!--            var a, b, i, val = this.value;-->
         quill.on('text-change', function(delta, oldDelta, source) {
         if (source == 'user') {
+        quill.suggestsDialogOpen = true;
             var text = quill.getText(0, 10);
 <!--            var a, b, i, val = text;-->
             var a = text;
@@ -74,11 +76,11 @@
             a.setAttribute("class", "autocomplete-items");
             /*append the DIV element as a child of the autocomplete container:*/
 <!--            this.parentNode.appendChild(a);-->
-            document.getElementById("postContent").parentNode.appendChild(a);
+            document.getElementById("helper").appendChild(a);
             /*for each item in the array...*/
             for (i = 0; i < arr.length; i++) {
                 /*check if the item starts with the same letters as the text field value:*/
-                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+<!--                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {-->
                     /*create a DIV element for each matching element:*/
                     b = document.createElement("DIV");
                     /*make the matching letters bold:*/
@@ -90,21 +92,24 @@
                     b.addEventListener("click", function(e) {
                         /*insert the value for the autocomplete text field:*/
 <!--                        inp.value = this.getElementsByTagName("input")[0].value;-->
-
-                        quill.insertText((quil.getLength()), 'prediction', 'bold', true);
+                        var symbol = this.getElementsByTagName("input")[0].value;
+                        quill.focus();
+<!--                        var symbol = $(this).html();-->
+                        var caretPosition = quill.getSelection(true);
+                        quill.insertText(caretPosition, symbol);
                         /*close the list of autocompleted values,
                         (or any other open lists of autocompleted values:*/
                         closeAllLists();
                     });
                     a.appendChild(b);
-                }
+<!--                }-->
             }
             }
         });
         /*execute a function presses a key on the keyboard:*/
-<!--        inp.addEventListener("keydown", function(e) {-->
-        quill.on('text-change', function(delta, oldDelta, source) {
-             if (source == 'user') {
+        a.addEventListener("keydown", function(e) {
+<!--        quill.on('text-change', function(delta, oldDelta, source) {-->
+<!--             if (source == 'user') {-->
             var x = document.getElementById(this.id + "autocomplete-list");
 <!--            var x = document.getElementById(this.id + "autocomplete-list");-->
             if (x) x = x.getElementsByTagName("div");
@@ -128,7 +133,7 @@
                     if (x) x[currentFocus].click();
                 }
             }
-            }
+<!--            }-->
         });
         function addActive(x) {
             /*a function to classify an item as "active":*/
@@ -298,6 +303,5 @@
          )};
 
     </script>
-
 </div>
 {% endblock %}
